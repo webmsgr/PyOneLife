@@ -5,8 +5,9 @@ def dfunc(arg):
     return arg
 
 
+cmdclass = {}
 try:
-    from Cython.Build import cythonize
+    from Cython.Build import cythonize, build_ext
     ext = ".pyx"
     dfunc = lambda x: cythonize(x)
 except:
@@ -14,10 +15,12 @@ except:
 
 
 
-exts = dfunc([Extension('pyOHOL.OHOL', ['src/OHOL/OHOL'+ext])])+[Extension('pyOHOL',['src/__main__.py'])]
+exts = dfunc([Extension('pyOHOL.OHOL', ['src/OHOL/OHOL'+ext])])
+exts += [Extension('pyOHOL',['src/__main__.py'])]
 
 setup(name='pyOHOL',
       version='1.0',
       ext_modules=exts,
+      cmdclass=cmdclass,
       requires=["numpy","pygame"]
       )
