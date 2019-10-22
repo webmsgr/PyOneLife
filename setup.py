@@ -7,6 +7,8 @@ def dfunc(arg):
 
 cmdclass = {}
 try:
+    from Cython.Compiler import Options
+    Options.embed = "main"
     from Cython.Build import cythonize, build_ext
     ext = ".pyx"
     dfunc = lambda x: cythonize(x)
@@ -15,8 +17,7 @@ except:
 
 
 
-exts = dfunc([Extension('pyOHOL.OHOL', ['src/OHOL/OHOL'+ext])])
-exts += [Extension('pyOHOL',['src/__main__.py'])]
+exts = dfunc([Extension('pyOHOL', ['src/client'+ext])])
 
 setup(name='pyOHOL',
       version='1.0',
