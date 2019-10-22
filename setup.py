@@ -8,14 +8,13 @@ def dfunc(arg):
 cmdclass = {}
 try:
     import Cython
-    os.system("cython --embed src/client.pyx")
-    os.system("cython --embed src/__main__.py")
+    os.system("cython src/client.pyx")
 except:
     pass
 
 
 
-exts = [Extension('pyOHOL.client', ['src/client.c']),Extension('pyOHOL',['src/__main__.c'])]
+exts = [Extension('pyOHOL.client', ['src/client.c'])]
 
 setup(name='pyOHOL',
       version='1.0',
