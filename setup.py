@@ -14,7 +14,7 @@ except:
 
 
 
-exts = [Extension('pyOHOL', ['src/client.c'])]
+exts = [Extension('pyOHOL.client', ['src/client.c']),Extension('pyOHOL',['src/__main__.py'])]
 
 setup(name='pyOHOL',
       version='1.0',
