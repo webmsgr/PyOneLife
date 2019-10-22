@@ -4,7 +4,8 @@ def read_config(folder):
     pass
 def load(folder):
     pass 
-
+def client():
+    pass
 def display_process(pipe):
     pass
 
