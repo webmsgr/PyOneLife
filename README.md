@@ -6,4 +6,4 @@ requires python. After installation using setup.py:
 ## Windows
 py -3 -c "import pyOHOL.client as client; client.main()"
 ## Linux
-python3 -c "imoort pyOHOL.client as client; client.main()"
+python3 -c "import pyOHOL.client as client; client.main()"
