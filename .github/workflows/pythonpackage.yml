@@ -32,3 +32,14 @@ jobs:
       run: |
         python3 setup.py install
         python3 -c "import pyOHOL.client as ohol; ohol.main()"
+    - name: Upload
+      run: |
+        mkdir out
+        cp setup.py out/
+        mkdir out/src
+        cp src/client.c out/src/
+    - uses: actions/upload-artifact@master
+      with:
+        name: compiled
+        path: out/
+      
