@@ -2,7 +2,7 @@ from distutils.core import setup, Extension
 import sys
 
 def dfunc(arg):
-      return arg
+    return arg
 
 
 try:
