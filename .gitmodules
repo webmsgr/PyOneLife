@@ -1,0 +1,6 @@
+[submodule "OneLife"]
+	path = OneLife
+	url = https://github.com/jasonrohrer/OneLife
+[submodule "OneLifeData"]
+	path = OneLifeData
+	url = https://github.com/jasonrohrer/OneLifeData7
