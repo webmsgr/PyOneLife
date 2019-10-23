@@ -1,4 +1,4 @@
-cimport miniz.miniz as miniz
+cimport miniz
 
 cpdef parse_chunk(header,compressed):
     cdef unsigned char *mapdata
