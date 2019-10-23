@@ -7,7 +7,7 @@ def dfunc(arg):
 
 
 
-exts = cythonize([Extension('miniz',['src/miniz/miniz.pxd']),Extension('pyOHOL.client', ['src/client.pyx','src/mapchunkparser.pyx'])])
+exts = cythonize([Extension('pyOHOL.miniz',['src/miniz/miniz.pxd']),Extension('pyOHOL', ['src/client.pyx','src/mapchunkparser.pyx'])])
 
 setup(name='pyOHOL',
       version='1.0',
