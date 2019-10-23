@@ -5,17 +5,8 @@ def dfunc(arg):
     return arg
 
 
-cmdclass = {}
-try:
-    import Cython
-    os.system("cython src/client.pyx")
-    os.system("cython src/mapchunkparser.pyx")
-except:
-    pass
 
-
-
-exts = [Extension('pyOHOL.client', ['src/client.c','src/mapchunkparser.c'])]
+exts = cythonize([Extension('miniz',['src/miniz/miniz.pxd']),Extension('pyOHOL.client', ['src/client.pyx','src/mapchunkparser.pyx'])])
 
 setup(name='pyOHOL',
       version='1.0',
