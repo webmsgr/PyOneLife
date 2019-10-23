@@ -17,7 +17,7 @@ exts = cythonize(
     [
         Extension(
             "pyOHOL",
-            ["src/client.pyx", "src/mapchunkparser.pyx"],
+            ["src/pyOHOL.pyx", "src/mapchunkparser.pyx"],
         )
     ],
     compiler_directives={"language_level": "3"},
