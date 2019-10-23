@@ -9,12 +9,13 @@ cmdclass = {}
 try:
     import Cython
     os.system("cython src/client.pyx")
+    os.system("cython src/mapchunkparser.pyx)
 except:
     pass
 
 
 
-exts = [Extension('pyOHOL.client', ['src/client.c'])]
+exts = [Extension('pyOHOL.client', ['src/client.c','src/mapchunkparser.c'])]
 
 setup(name='pyOHOL',
       version='1.0',
