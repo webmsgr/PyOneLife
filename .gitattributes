@@ -1,2 +1,2 @@
-src/*.c linguist-vendored
-src/*.h linguist-vendored
+miniz.h linguist-vendored
+miniz.c linguist-vendored
