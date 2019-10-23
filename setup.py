@@ -1,7 +1,7 @@
 import os
 from distutils.core import Extension
 from distutils.core import setup
-
+import numpy as np
 from Cython.Build import cythonize
 
 
@@ -22,4 +22,5 @@ exts = cythonize(
 setup(name="pyOHOL",
       version="1.0",
       ext_modules=exts,
+      include_dirs = [np.get_include()],
       requires=["numpy", "pygame","console_progressbar"])
