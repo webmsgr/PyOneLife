@@ -2,7 +2,7 @@
 import sys
 try:
     import pyOHOL.client as client
-except ImportError:
+except ImportError as e:
     print("Client is not installed")
-    sys.exit(1)
+    raise e
 client.main()
