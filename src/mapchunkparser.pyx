@@ -9,6 +9,6 @@ cpdef parse_chunk(header,compressed):
     _, width, height, x, y, size, cbuffersize = header
     cbsize = cbuffersize
     csize = size
-    miniz.mz_uncompress(mapdata,csize,compressed,cbsize)
+    miniz.mz_uncompress(mapdata,&(csize),compressed,&(cbsize))
     
     
