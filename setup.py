@@ -16,7 +16,7 @@ def dfunc(arg):
 exts = cythonize(
     [
         Extension(
-            "pyOHOL.client",
+            "pyOHOL",
             ["src/client.pyx", "src/mapchunkparser.pyx"],
         )
     ],
