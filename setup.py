@@ -9,7 +9,7 @@ cmdclass = {}
 try:
     import Cython
     os.system("cython src/client.pyx")
-    os.system("cython src/mapchunkparser.pyx)
+    os.system("cython src/mapchunkparser.pyx")
 except:
     pass
 
