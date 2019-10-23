@@ -7,7 +7,7 @@ cpdef parse_chunk(bytes header,bytes compressed):
     cdef unsigned long *csize 
     cdef unsigned long cbsize
     cdef unsigned long before
-    cdef bytes *out
+    cdef bytes out
     cdef char beforetwo = compressed
     cdef char *step2 = &(beforetwo)
     cdef unsigned char *pSource = <unsigned char *>step2
@@ -17,5 +17,5 @@ cpdef parse_chunk(bytes header,bytes compressed):
     before = <unsigned long>int(size)
     csize = &(before)
     mz_uncompress(mpdata,csize,pSource,cbsize)
-    out = <bytes *>mpdata
+    out = <bytes>mpdata
     
