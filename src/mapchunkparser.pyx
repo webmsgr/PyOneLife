@@ -6,9 +6,11 @@ cpdef parse_chunk(header,compressed):
     cdef bytes mpdata
     cdef unsigned long *csize 
     cdef unsigned long cbsize
+    cdef int before
     header = header.split()
     _, width, height, x, y, size, cbuffersize = header
     cbsize = <int>cbuffersize
-    csize = <int>size
+    before = <int>int(size)
+    csize = &(before)
     
     
