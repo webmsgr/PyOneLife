@@ -1,1 +1,1 @@
-cdef parse_chunk(header,compressed)
+cdef parse_chunk(bytes header,bytes compressed)
