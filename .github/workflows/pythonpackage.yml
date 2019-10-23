@@ -39,7 +39,9 @@ jobs:
         mkdir out
         cp setup.py out/
         mkdir out/src
-        cp src/client.c out/src/
+        cp src/*.c out/src/
+        cp src/*.pyx out/src/
+        cp src/*.pxd out/src/
     - uses: actions/upload-artifact@master
       with:
         name: compiled
