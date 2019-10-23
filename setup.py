@@ -26,5 +26,5 @@ exts = cythonize(
 setup(name="pyOHOL",
       version="1.0",
       ext_modules=exts,
-      include_dirs = [np.get_include(),'/src/'],
+      include_dirs = [np.get_include(),'./src/'],
       requires=["numpy", "pygame","console_progressbar","requests","Pillow"])
