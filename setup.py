@@ -23,4 +23,4 @@ setup(name="pyOHOL",
       version="1.0",
       ext_modules=exts,
       include_dirs = [np.get_include()],
-      requires=["numpy", "pygame","console_progressbar"])
+      requires=["numpy", "pygame","console_progressbar","requests"])
