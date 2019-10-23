@@ -33,7 +33,7 @@ jobs:
     - name: Test install
       run: |
         python3 setup.py install
-        python3 -c "import pyOHOL.client as ohol"
+        python3 -c "import pyOHOL as ohol"
     - name: Upload
       run: |
         mkdir out
