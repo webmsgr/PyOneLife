@@ -513,12 +513,12 @@ int mz_inflate(mz_streamp pStream, int flush) {
 
     if (status < 0)
       return MZ_DATA_ERROR; /* Stream is corrupted (there could be some
-                               uncompressed data left in the output dictionary -
-                               oh well). */
+                         uncompressed data left in the output dictionary -
+                         oh well). */
     else if ((status == TINFL_STATUS_NEEDS_MORE_INPUT) && (!orig_avail_in))
       return MZ_BUF_ERROR; /* Signal caller that we can't make forward progress
-                              without supplying more input or by setting flush
-                              to MZ_FINISH. */
+                        without supplying more input or by setting flush
+                        to MZ_FINISH. */
     else if (flush == MZ_FINISH) {
       /* The output buffer MUST be large to hold the remaining uncompressed data
        * when flush==MZ_FINISH. */
@@ -2829,8 +2829,8 @@ tinfl_status tinfl_decompress(tinfl_decompressor *r,
   }
   bit_buf &= (tinfl_bit_buf_t)((((mz_uint64)1) << num_bits) - (mz_uint64)1);
   MZ_ASSERT(!num_bits); /* if this assert fires then we've read beyond the end
-                           of non-deflate/zlib streams with following data (such
-                           as gzip streams). */
+                         of non-deflate/zlib streams with following data (such
+                         as gzip streams). */
 
   if (decomp_flags & TINFL_FLAG_PARSE_ZLIB_HEADER) {
     for (counter = 0; counter < 4; ++counter) {
