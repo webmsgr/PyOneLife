@@ -1,5 +1,6 @@
 from distutils.core import setup, Extension
 import os
+from Cython.Build import cythonize
 
 def dfunc(arg):
     return arg
@@ -11,6 +12,5 @@ exts = cythonize([Extension('miniz',['src/miniz/miniz.pxd']),Extension('pyOHOL.c
 setup(name='pyOHOL',
       version='1.0',
       ext_modules=exts,
-      cmdclass=cmdclass,
       requires=["numpy","pygame"]
       )
