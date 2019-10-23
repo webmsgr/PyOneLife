@@ -22,4 +22,4 @@ exts = cythonize(
 setup(name="pyOHOL",
       version="1.0",
       ext_modules=exts,
-      requires=["numpy", "pygame"])
+      requires=["numpy", "pygame","console_progressbar"])
