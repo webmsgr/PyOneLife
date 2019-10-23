@@ -1,3 +1,4 @@
 pygame
 numpy
 cython
+console_progressbar
