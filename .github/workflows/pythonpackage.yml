@@ -42,6 +42,7 @@ jobs:
         cp src/*.c out/src/
         cp src/*.pyx out/src/
         cp src/*.pxd out/src/
+        cp entrypoint.py out/
     - uses: actions/upload-artifact@master
       with:
         name: compiled
