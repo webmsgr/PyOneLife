@@ -1,4 +1,4 @@
-cdef extern from "miniz.h":
+cdef extern from "miniz.c":
     int mz_uncompress(unsigned char *pDest, unsigned long *pDest_len, const unsigned char *pSource, unsigned long source_len);
     
 
