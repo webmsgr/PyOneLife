@@ -9,12 +9,9 @@ DEF tilesize = 128
 tilesperscreen = 5 # zoom
 
 from console_progressbar import ProgressBar
-def read_config(folder):
+def load(file):
     pass
-def load(folder):
-    pass
-def client():
-    pass
+
 def display_process(pipe):
     # Define some colors
     BLACK = (0, 0, 0)
@@ -30,22 +27,44 @@ def display_process(pipe):
     done = False
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
+    screenSurface = pygame.Surface(size)
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-    screen.fill(WHITE)
-    # --- Drawing code should go here
-    pygame.display.flip()
-    clock.tick(60)
-pygame.quit()
+        # command getter goes here
+        changed = False
+        while pipe.poll():
+            changed = True
+            command = pipe.recv()
+            if command == "STOP":
+                done = True
+
+            pipe.send("OK")
+            # do things
+        if changed:
+            screen.fill(WHITE)
+            screen.blit(screenSurface,(0,0))
+            pygame.display.flip()
+        clock.tick(60)
+    pygame.quit()
 
 
 def server_process(saddr,sport,pipe):
     pass
 def main():
     display,d = mp.Pipe()
-    display_process(d)
+    display_proc = mp.Process(target=display_process,args=(d,))
+    display_proc.start()
+    m = ""
+    while display_proc.is_alive() and m != "q":
+        m = input(">")
+        if m != "q":
+            display.send(m)
+            print(display.recv())
+    print("Stopping")
+    display.send("STOP")
+    display_proc.join()
 
 if __name__ == "__main__":
     main()
