@@ -127,6 +127,7 @@ macros = {
     "TILE": tile
 }
 cdef class Map():
+    cdef public bint force
     cdef public object map
     cdef public object camera
     cdef public object tilesper
@@ -166,6 +167,7 @@ cdef class Map():
 def server_process(saddr,sport,pipe):
     pass
 def main():
+    cdef int i
     display,d = mp.Pipe()
     display_proc = mp.Process(target=display_process,args=(d,))
     display_proc.start()
@@ -173,7 +175,6 @@ def main():
         pass
     m = ""
     while display_proc.is_alive() and m != "q":
-        cdef int i
         m = input(">")
         if m.startswith("MACRO"):
             m = m.split()
@@ -198,11 +199,12 @@ def main():
             map.setat(0,0,"0","0","0")
             drawn = map.draw()
             [display.send(x) for x in drawn]
-            for i in range(0,-127,-1):
+            for i in range(0,-128,-1):
                 display.send("SETCAM 0 {}".format(i))
             map.camera = (map.camera[0],map.camera[1]+1)
             map.force = True
-            [display.send(x) for x in ["SETCAM 0 0"]+map.draw()]
+            drawn = ["SETCAM 0 0"] + map.draw()
+            [display.send(x) for x in drawn]
         if m != "q":
             display.send(m)
             print(display.recv())
