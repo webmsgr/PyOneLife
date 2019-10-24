@@ -4,6 +4,7 @@ import requests
 import numpy
 cimport numpy
 import os
+import time
 import glob
 from PIL import Image
 DEF tilesize = 128
@@ -157,7 +158,10 @@ cdef class Map():
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed or self.force:
                     out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy)[0]))
-                    self.changed.remove((dx,dy))
+                    if not self.force:
+                        self.changed.remove((dx,dy))
+                    if self.force:
+                        self.changed = []
         self.force = False
         return out
 
@@ -199,15 +203,16 @@ def main():
             map.setat(0,0,"0","0","0")
             drawn = map.draw()
             [display.send(x) for x in drawn]
+            time.sleep(1)
             for i in range(0,-128,-1):
                 display.send("SETCAM 0 {}".format(i))
+                time.sleep(0.1)
             map.camera = (map.camera[0],map.camera[1]+1)
             map.force = True
             drawn = ["SETCAM 0 0"] + map.draw()
             [display.send(x) for x in drawn]
         if m != "q":
             display.send(m)
-            print(display.recv())
     print("Stopping")
     display.send("STOP")
     display_proc.join()
