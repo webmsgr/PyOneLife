@@ -42,10 +42,12 @@ jobs:
         cp src/*.pyx out/src/
         cp src/*.h out/src/
         cp entrypoint.py out/
-        zip -r OneLifeData.zip OneLifeData/
-        cp OneLifeData.zip out/
+        mkdir out/OneLifeData
+        cp -r OneLifeData/ out/OneLifeData
+        mkdir artifact
+        zip -r pyOHOL.zip out/
     - uses: actions/upload-artifact@master
       with:
-        name: compiled
-        path: out/
+        name: pyOHOL
+        path: pyOHOL.zip
       
