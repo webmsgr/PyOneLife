@@ -95,7 +95,7 @@ macros = {
 	"FILLWHITE": lambda: fill("4"),
 	"FILLCRACKS": lambda: fill("5"),
 	"FILLJUNGLE": lambda: fill("6"),
-	"FILLUNKOWN": lambda: fill("7"),
+	"FILLUNKNOWN": lambda: fill("7"),
 	"TILE": tile
 }
 
