@@ -134,7 +134,7 @@ cdef class Map():
     def __init__(self,cx,cy,tilesper):
         self.map = {}
         self.camera = (cx-1,cy-1)
-        self.tilesper = tilesper+1
+        self.tilesper = tilesper+2
         self.changed = []
     cpdef setat(self,x,y,ground,biome,tile):
         if x in self.map:
