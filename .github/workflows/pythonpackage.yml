@@ -43,7 +43,7 @@ jobs:
         cp src/*.h out/src/
         cp entrypoint.py out/
         mkdir out/OneLifeData
-        cp -r OneLifeData/* out/OneLifeData
+        cp -r OneLifeData/* out/OneLifeData/
     - uses: actions/upload-artifact@master
       with:
         name: compiled
