@@ -60,7 +60,8 @@ cpdef display_process(pipe):
     done = False
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
-    screenSurface = pygame.Surface(size)
+    nt = tilesperscreen+2
+    screenSurface = pygame.Surface((tilesize*nt,tilesize*nt))
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -89,6 +90,7 @@ cpdef display_process(pipe):
                 command = command.split()
                 _ = command.pop(0)
                 x,y = map(int,[command[0],command[1]])
+                x,y = x+1,y+1
                 id = command[2]
                 x,y = x*tilesize,y*tilesize
                 screenSurface.blit(grounds[id],(x,y))
@@ -101,7 +103,7 @@ cpdef display_process(pipe):
             # do things
         if changed:
             screen.fill(WHITE)
-            screen.blit(screenSurface,(cx,cy))
+            screen.blit(screenSurface,(cx-128,cy-128))
             pygame.display.flip()
         clock.tick(60)
     pygame.quit()
@@ -138,6 +140,7 @@ cdef class Map():
         self.camera = (cx-1,cy-1)
         self.tilesper = tilesper+2
         self.changed = []
+        self.force = True
     cpdef setat(self,x,y,ground,biome,tile):
         if x in self.map:
             self.map[x][y] = (ground,biome,tile)
@@ -164,6 +167,9 @@ cdef class Map():
                         self.changed = []
         self.force = False
         return out
+    cpdef up(self,amt):
+        self.camera = (self.camera[0],self.camera[1]-amt)
+        self.force = True
 
 
 
@@ -200,15 +206,17 @@ def main():
                 raise RuntimeError
         if m.startswith("SLIDE"):
             map = Map(0,0,tilesperscreen)
-            map.setat(0,0,"0","0","0")
+            map.setat(0,-1,"1","0","0")
+            [map.setat(0,y,"0","0","0") for y in range(10)]
+            map.force = True
             drawn = map.draw()
             [display.send(x) for x in drawn]
             time.sleep(1)
-            for i in range(0,-128,-1):
+            for i in range(0,129):
+                display.force = True
                 display.send("SETCAM 0 {}".format(i))
                 time.sleep(0.1)
-            map.camera = (map.camera[0],map.camera[1]+1)
-            map.force = True
+            map.up(1)
             drawn = ["SETCAM 0 0"] + map.draw()
             [display.send(x) for x in drawn]
         if m != "q":
