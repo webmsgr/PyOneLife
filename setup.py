@@ -25,7 +25,7 @@ exts = [Extension("pyOHOL", ["src/pyOHOL"+ext])]
 
 if USE_CYTHON:
     from Cython.Build import cythonize
-    exts = cythonize(exts,compiler_directives={"language_level": "3"}))
+    exts = cythonize(exts,compiler_directives={"language_level": "3"})
 
 setup(
     name="pyOHOL",
