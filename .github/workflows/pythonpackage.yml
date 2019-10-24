@@ -40,7 +40,7 @@ jobs:
         mkdir out/src
         cp src/*.c out/src/
         cp src/*.pyx out/src/
-        cp src/*.pxd out/src/
+        cp src/*.h out/src/
         cp entrypoint.py out/
     - uses: actions/upload-artifact@master
       with:
