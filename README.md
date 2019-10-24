@@ -5,7 +5,7 @@
 1. clone the repo
 2. update the submodules with `git submodule update --init`
 3. install the requirements with `pip3 install -r requirements.txt`
-4. run `python setup.py install` to install the game
+4. run `python setup.py install` to install the game, add `--cython` to compile from source
 5. run `entrypoint.py` to launch
 
 
