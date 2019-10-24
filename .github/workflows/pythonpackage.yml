@@ -37,7 +37,7 @@ jobs:
       run: |
         mkdir game
         cp setup.py game/
-        mkdir gams/src
+        mkdir game/src
         cp src/*.c game/src/
         cp src/*.pyx gams/src/
         cp src/*.h game/src/
