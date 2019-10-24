@@ -154,9 +154,10 @@ cdef class Map():
         out = []
         for dx in range(self.camera[0],self.camera[0]+self.tilesper):
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
-                if (dx,dy) in self.changed:
+                if (dx,dy) in self.changed or self.force:
                     out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy)[0]))
                     self.changed.remove((dx,dy))
+        self.force = False
         return out
 
 
@@ -172,6 +173,7 @@ def main():
         pass
     m = ""
     while display_proc.is_alive() and m != "q":
+        cdef int i
         m = input(">")
         if m.startswith("MACRO"):
             m = m.split()
@@ -191,6 +193,16 @@ def main():
             [display.send(x) for x in drawn]
             if map.draw() != []:
                 raise RuntimeError
+        if m.startswith("SLIDE"):
+            map = Map(0,0,tilesperscreen)
+            map.setat(0,0,"0","0","0")
+            drawn = map.draw()
+            [display.send(x) for x in drawn]
+            for i in range(0,-127,-1):
+                display.send("SETCAM 0 {}".format(i))
+            map.camera = (map.camera[0],map.camera[1]+1)
+            map.force = True
+            [display.send(x) for x in ["SETCAM 0 0"]+map.draw()]
         if m != "q":
             display.send(m)
             print(display.recv())
