@@ -19,5 +19,5 @@ While testing, there will be a number of commands to emulate the game client cod
 # Macros
 The following macros are avalable:
 1. `GROUNDTEST` display all ground tiles
-2. `FILL{N}` Where `{n}` is any tile name found in the source. I.E. `FILLGRASS` will fill the entire screen with grass tiles
+2. `FILL{N}` Where `{n}` is any tile name found in the source. I.E. `MACRO FILLGRASS` will fill the entire screen with grass tiles
 3. `TILE` Display all tiles over the entire screen
