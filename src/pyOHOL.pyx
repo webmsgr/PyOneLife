@@ -124,6 +124,7 @@ cdef class Map():
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed:
                     out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0],dy-self.camera[1],self.getat(dx,dy)[0]))
+                    self.changed.remove((dx,dy))
         return out
 
 
