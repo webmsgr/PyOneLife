@@ -39,7 +39,7 @@ jobs:
         cp setup.py game/
         mkdir game/src
         cp src/*.c game/src/
-        cp src/*.pyx gams/src/
+        cp src/*.pyx game/src/
         cp src/*.h game/src/
         cp entrypoint.py game/
         mkdir game/OneLifeData
