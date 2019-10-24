@@ -15,7 +15,7 @@ While testing, there will be a number of commands to emulate the game client cod
 2. `DRAWLINE x1 y1 x2 y2 r g b`
 3. `DRAWFLOOR x y id` where id is any number 0-6
 4. `MACRO name` execute a macro
-
+5. `q` quit
 # Macros
 The following macros are avalable:
 1. `GROUNDTEST` display all ground tiles
