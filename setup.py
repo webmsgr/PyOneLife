@@ -4,7 +4,7 @@ from distutils.core import Extension
 from distutils.core import setup
 
 import numpy as np
-from Cython.Build import cythonize
+
 
 if sys.version[0] == 2:
     sys.stdout.write("No python 2 support\n")
@@ -14,11 +14,18 @@ if sys.version[0] == 2:
 def dfunc(arg):
     return arg
 
+if "--cython" in sys.argv:
+    USE_CYTHON = True
+    sys.argv.remove("--cython")
+else:
+    USE_CYTHON = False
 
-exts = cythonize(
-    [Extension("pyOHOL", ["src/pyOHOL.pyx"])],
-    compiler_directives={"language_level": "3"},
-)
+ext = '.pyx' if USE_CYTHON else '.c'
+exts = [Extension("pyOHOL", ["src/pyOHOL"+ext])]
+
+if USE_CYTHON:
+    from Cython.Build import cythonize
+    exts = cythonize(exts,compiler_directives={"language_level": "3"}))
 
 setup(
     name="pyOHOL",
