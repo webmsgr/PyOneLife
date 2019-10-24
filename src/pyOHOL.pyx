@@ -11,11 +11,11 @@ cdef extern from "miniz.h":
     pass
 cdef extern from "miniz.c":
     int mz_uncompress(unsigned char *pDest, unsigned long *pDest_len, const unsigned char *pSource, unsigned long source_len);
-    
+
 
 cpdef parse_chunk(bytes header,bytes compressed):
     cdef unsigned char *mpdata
-    cdef unsigned long *csize 
+    cdef unsigned long *csize
     cdef unsigned long cbsize
     cdef unsigned long before
     cdef bytes out
@@ -29,7 +29,7 @@ cpdef parse_chunk(bytes header,bytes compressed):
     csize = &(before)
     mz_uncompress(mpdata,csize,pSource,cbsize)
     out = <bytes>mpdata
- 
+
 tilesperscreen = 5 # zoom
 
 from console_progressbar import ProgressBar
@@ -41,9 +41,11 @@ cdef loadgrounds():
     return grounds
 
 cpdef display_process(pipe):
+    cdef int cx,cy
     grounds = loadgrounds()
     pipe.send("READY")
     # Define some colors
+    cx,cy = 0,0
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
@@ -67,6 +69,7 @@ cpdef display_process(pipe):
         while pipe.poll():
             changed = True
             command = pipe.recv()
+            print(command)
             if command == "STOP":
                 done = True
             if command.startswith("DRAWPIXEL"):
@@ -74,11 +77,13 @@ cpdef display_process(pipe):
                 _ = command.pop(0)
                 x,y,r,g,b = map(int,command)
                 pygame.draw.line(screenSurface,(r,g,b),(x,y),(x,y))
+                continue
             if command.startswith("DRAWLINE"):
                 command = command.split()
                 _ = command.pop(0)
                 x1,y1,x2,y2,r,g,b = map(int,command)
                 pygame.draw.line(screenSurface,(r,g,b),(x1,y1),(x2,y2))
+                continue
             if command.startswith("DRAWFLOOR"):
                 command = command.split()
                 _ = command.pop(0)
@@ -86,11 +91,16 @@ cpdef display_process(pipe):
                 id = command[2]
                 x,y = x*tilesize,y*tilesize
                 screenSurface.blit(grounds[id],(x,y))
-            pipe.send("OK")
+                continue
+            if command.startswith("SETCAM"):
+                command = command.split()
+                _ = command.pop(0)
+                cx,cy = map(int,command)
+                continue
             # do things
         if changed:
             screen.fill(WHITE)
-            screen.blit(screenSurface,(0,0))
+            screen.blit(screenSurface,(cx,cy))
             pygame.display.flip()
         clock.tick(60)
     pygame.quit()
@@ -123,8 +133,8 @@ cdef class Map():
     cdef public object changed
     def __init__(self,cx,cy,tilesper):
         self.map = {}
-        self.camera = (cx,cy)
-        self.tilesper = tilesper
+        self.camera = (cx-1,cy-1)
+        self.tilesper = tilesper+1
         self.changed = []
     cpdef setat(self,x,y,ground,biome,tile):
         if x in self.map:
@@ -145,7 +155,7 @@ cdef class Map():
         for dx in range(self.camera[0],self.camera[0]+self.tilesper):
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed:
-                    out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0],dy-self.camera[1],self.getat(dx,dy)[0]))
+                    out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy)[0]))
                     self.changed.remove((dx,dy))
         return out
 
@@ -170,14 +180,17 @@ def main():
                 macroz = macros[macroname]().split("#")
                 for macro in macroz:
                     display.send(macro)
-                    display.recv()
             continue
         if m.startswith("MAP"):
-            map = Map(0,1,tilesperscreen)
-            map.setat(0,0,"1","0","0")
-            map.setat(0,1,"2","0","0")
+            map = Map(-1,-1,tilesperscreen)
+            map.setat(0,0,"0","0","0")
+            map.setat(0,1,"1","0","0")
+            map.setat(1,0,"2","0","0")
+            map.setat(1,1,"3","0","0")
             drawn = map.draw()
             [display.send(x) for x in drawn]
+            if map.draw() != []:
+                raise RuntimeError
         if m != "q":
             display.send(m)
             print(display.recv())
