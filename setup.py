@@ -9,6 +9,7 @@ if sys.version[0] == 2:
     sys.stdout.write("No python 2 support\n")
     sys.exit(1)
 
+
 def dfunc(arg):
     return arg
 
@@ -26,5 +27,5 @@ exts = cythonize(
 setup(name="pyOHOL",
       version="1.0",
       ext_modules=exts,
-      include_dirs = [np.get_include(),'./src/'],
-      requires=["numpy", "pygame","console_progressbar","requests","Pillow"])
+      include_dirs=[np.get_include(), './src/'],
+      requires=["numpy", "pygame", "console_progressbar", "requests", "Pillow"])
