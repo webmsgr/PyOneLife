@@ -7,7 +7,8 @@ import os
 import glob
 from PIL import Image
 DEF tilesize = 128
-
+cdef extern from "miniz.h":
+    pass
 cdef extern from "miniz.c":
     int mz_uncompress(unsigned char *pDest, unsigned long *pDest_len, const unsigned char *pSource, unsigned long source_len);
     
