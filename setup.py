@@ -2,6 +2,7 @@ import os
 import sys
 from distutils.core import Extension
 from distutils.core import setup
+
 import numpy as np
 from Cython.Build import cythonize
 
