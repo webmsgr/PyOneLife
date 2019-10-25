@@ -1,6 +1,7 @@
 import pygame
 import multiprocessing as mp
 import requests
+import socket
 import numpy
 cimport numpy
 import os
@@ -43,9 +44,18 @@ cdef loadgrounds():
         grounds[os.path.basename(file.replace("ground_","").replace(".tga",""))] = pygame.transform.scale(pygame.image.load(file),(tilesize,tilesize))
     return grounds
 
+cdef loadsprites():
+    sprites = {}
+    for file in glob.glob(os.path.join(dir_name,"OneLifeData/sprites/*.tga")):
+        sprites[os.path.basename(file.replace(".tga",""))] = pygame.image.load(file)
+    return sprites
+
 cpdef display_process(pipe):
     cdef int cx,cy
+    print("Loading ground")
     grounds = loadgrounds()
+    print("Loading sprites")
+    sprites = loadsprites()
     pipe.send("READY")
     # Define some colors
     cx,cy = 0,0
@@ -101,6 +111,14 @@ cpdef display_process(pipe):
                 _ = command.pop(0)
                 cx,cy = map(int,command)
                 continue
+	    if command.startswith("DRAWSPRITE"):
+		command = command.split()
+		_ = command.pop(0)
+		tx,ty,id = map(int,command)
+		offset = tilesize//2
+		dx,dy = tx*tilesize+offset,ty*tilesize+offset
+		screenSurface.blit(sprites[str(id)],dx,dy)
+		continue
             # do things
         if changed:
             screen.fill(WHITE)
