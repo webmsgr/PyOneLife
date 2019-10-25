@@ -18,9 +18,9 @@ cdef extern from "miniz.c":
 
 cpdef get_dir():
     if "OneLifeData" in os.listdir("."):
-	return os.path.abspath(".")
+        return os.path.abspath(".")
     else:
-	return dir_name
+        return dir_name
 cpdef parse_chunk(bytes header,bytes compressed):
     cdef unsigned char *mpdata
     cdef unsigned long *csize
@@ -117,14 +117,14 @@ cpdef display_process(pipe):
                 _ = command.pop(0)
                 cx,cy = map(int,command)
                 continue
-	    if command.startswith("DRAWSPRITE"):
-		command = command.split()
-		_ = command.pop(0)
-		tx,ty,id = map(int,command)
-		offset = tilesize//2
-		dx,dy = tx*tilesize+offset,ty*tilesize+offset
-		screenSurface.blit(sprites[str(id)],dx,dy)
-		continue
+            if command.startswith("DRAWSPRITE"):
+                command = command.split()
+                _ = command.pop(0)
+                tx,ty,id = map(int,command)
+                offset = tilesize//2
+                dx,dy = tx*tilesize+offset,ty*tilesize+offset
+                screenSurface.blit(sprites[str(id)],(dx,dy))
+                continue
             # do things
         if changed:
             screen.fill(WHITE)
@@ -200,8 +200,8 @@ cdef class Map():
 def server_process(saddr,sport,pipe):
     pass
 
-	
-	
+
+
 cpdef main():
     cdef int i
     mp.freeze_support()
