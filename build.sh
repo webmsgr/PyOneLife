@@ -1,6 +1,10 @@
 mkdir build
 mkdir build/dist
 python3 setup.py build_ext --inplace --cython
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    exit $retVal
+fi
 pip3 install shiv
 pip3 install -r requirements.txt --target build/dist
 mv *.so build/dist
