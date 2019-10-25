@@ -178,8 +178,9 @@ def server_process(saddr,sport,pipe):
 
 	
 	
-def main():
+cpdef main():
     cdef int i
+    mp.freeze_support()
     display,d = mp.Pipe()
     display_proc = mp.Process(target=display_process,args=(d,))
     display_proc.start()
