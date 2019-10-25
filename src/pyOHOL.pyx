@@ -6,6 +6,8 @@ cimport numpy
 import os
 import time
 import glob
+path = os.path.abspath(__file__)
+dir_name = os.path.dirname(path)
 from PIL import Image
 DEF tilesize = 128
 cdef extern from "miniz.h":
@@ -37,7 +39,7 @@ from console_progressbar import ProgressBar
 
 cdef loadgrounds():
     grounds = {}
-    for file in glob.glob("./OneLifeData/ground/ground_*.tga"):
+    for file in glob.glob(os.path.join(dir_name,"OneLifeData/ground/ground_*.tga")):
         grounds[os.path.basename(file.replace("ground_","").replace(".tga",""))] = pygame.transform.scale(pygame.image.load(file),(tilesize,tilesize))
     return grounds
 
@@ -71,7 +73,6 @@ cpdef display_process(pipe):
         while pipe.poll():
             changed = True
             command = pipe.recv()
-            print(command)
             if command == "STOP":
                 done = True
             if command.startswith("DRAWPIXEL"):
@@ -107,8 +108,6 @@ cpdef display_process(pipe):
             pygame.display.flip()
         clock.tick(60)
     pygame.quit()
-
-
 cdef groundtest():
     return "DRAWFLOOR 0 0 0#DRAWFLOOR 1 0 1#DRAWFLOOR 2 0 2#DRAWFLOOR 3 0 3#DRAWFLOOR 4 0 4#DRAWFLOOR 0 1 5#DRAWFLOOR 1 1 6#DRAWFLOOR 2 1 U"
 cdef fill(floor="0"):
@@ -176,6 +175,9 @@ cdef class Map():
 
 def server_process(saddr,sport,pipe):
     pass
+
+	
+	
 def main():
     cdef int i
     display,d = mp.Pipe()

@@ -6,6 +6,8 @@ try:
 except ImportError as e:
     print("Client is not installed")
     raise e
-if __name__ == "__main__":
+def main():
     multiprocessing.freeze_support()
     pyOHOL.main()
+if __name__ == "__main__":
+    main()
