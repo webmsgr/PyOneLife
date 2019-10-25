@@ -16,7 +16,11 @@ cdef extern from "miniz.h":
 cdef extern from "miniz.c":
     int mz_uncompress(unsigned char *pDest, unsigned long *pDest_len, const unsigned char *pSource, unsigned long source_len);
 
-
+cpdef get_dir():
+    if "OneLifeData" in os.listdir("."):
+	return os.path.abspath(".")
+    else:
+	return dir_name
 cpdef parse_chunk(bytes header,bytes compressed):
     cdef unsigned char *mpdata
     cdef unsigned long *csize
@@ -39,14 +43,16 @@ tilesperscreen = 5 # zoom
 from console_progressbar import ProgressBar
 
 cdef loadgrounds():
+    di = get_dir()
     grounds = {}
-    for file in glob.glob(os.path.join(dir_name,"OneLifeData/ground/ground_*.tga")):
+    for file in glob.glob(os.path.join(di,"OneLifeData/ground/ground_*.tga")):
         grounds[os.path.basename(file.replace("ground_","").replace(".tga",""))] = pygame.transform.scale(pygame.image.load(file),(tilesize,tilesize))
     return grounds
 
 cdef loadsprites():
     sprites = {}
-    for file in glob.glob(os.path.join(dir_name,"OneLifeData/sprites/*.tga")):
+    di = get_dir()
+    for file in glob.glob(os.path.join(di,"OneLifeData/sprites/*.tga")):
         sprites[os.path.basename(file.replace(".tga",""))] = pygame.image.load(file)
     return sprites
 
