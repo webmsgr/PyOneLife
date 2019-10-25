@@ -1,4 +1,5 @@
 # PyOneLife
+[![CircleCI](https://circleci.com/gh/webmsgr/PyOneLife/tree/master.svg?style=svg)](https://circleci.com/gh/webmsgr/PyOneLife/tree/master)
 "Hack" client for OHOL
 
 # Installation
