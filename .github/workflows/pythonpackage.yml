@@ -35,18 +35,9 @@ jobs:
         python3 -c "import pyOHOL"
     - name: Upload
       run: |
-        mkdir game
-        cp setup.py game/
-        mkdir game/src
-        cp src/*.c game/src/
-        cp src/*.pyx game/src/
-        cp src/*.h game/src/
-        cp entrypoint.py game/
-        mkdir game/OneLifeData
-        cp -r OneLifeData/ game/OneLifeData
-        zip -r pyOHOL.zip game/
+        ./build.sh
     - uses: actions/upload-artifact@master
       with:
         name: pyOHOL
-        path: pyOHOL.zip
+        path: pyOHOL.pyz
       
