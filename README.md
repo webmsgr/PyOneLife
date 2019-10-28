@@ -10,3 +10,4 @@
 4. run `python setup.py install` to install the game, add `--cython` to compile from source
 5. run `entrypoint.py` to launch
 
+you can also run build.sh / build.bat to build a standalone pyz that works on your platform
