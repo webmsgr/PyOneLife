@@ -273,14 +273,12 @@ cpdef main():
             time.sleep(1)
             for i in range(0,129):
                 map.force = True
-                display.send("SETCAM 0 {}".format(i))
+                display.send(pygamecommand(CAMERA,[0,i]))
                 time.sleep(0.1)
             map.up(1)
             drawn = ["SETCAM 0 0"] + map.draw()
             [display.send(x) for x in drawn]
             continue
-        if m != "q":
-            display.send(m)
     print("Stopping")
     display.send(pygamecommand(STOP,[]))
     display_proc.join()
