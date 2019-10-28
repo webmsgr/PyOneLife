@@ -151,30 +151,24 @@ macros = {
 }
 
 
-cdef class OHOLObject():
-    cdef public int id
-    cdef public list contains
-    cdef public object data
-    def __init__(self,id,contains=[],data=""):
-        self.id = id
-        self.contains = contains
-cdef class Tile():
-    cdef public int ground
-    cdef public int x,y
-    cdef public int biome
-    cdef public OHOLObject tile
-    def __init__(self,x,y,ground,biome,tile):
-        self.x,self.y = x,y
-        self.ground = ground
-        self.biome = biome
-        self.tile = tile
-
+cdef struct s_OHOLObject:
+    int id
+    list contains
+    object data
+ctypedef s_OHOLObject OHOLObject
+cdef struct s_Tile:
+    int ground
+    int x,y
+    int biome
+    OHOLObject tile
+ctypedef s_Tile Tile
+ctypedef (int,int) pos
 cdef class Map():
     cdef public bint force
     cdef public object map
-    cdef public (int,int) camera
+    cdef public pos camera
     cdef public int tilesper
-    cdef public object changed
+    cdef public pos[] changed
     def __init__(self,cx,cy,tilesper):
         self.map = {}
         self.camera = (cx-1,cy-1)
