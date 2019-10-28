@@ -211,7 +211,7 @@ cdef class Map():
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed or self.force:
                     argsGround = [dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).ground]
-                    out.append(pygamecommand(DRAWGROUND,argsGround))
+                    out.append(pygamecommand(DRAWFLOOR,argsGround))
                     if not self.force:
                         self.changed.remove((dx,dy))
                     if self.force:
