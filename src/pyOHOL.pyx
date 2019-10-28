@@ -136,20 +136,6 @@ cpdef display_process(pipe):
             pygame.display.flip()
         clock.tick(60)
     pygame.quit()
-cdef groundtest():
-    return "DRAWFLOOR 0 0 0#DRAWFLOOR 1 0 1#DRAWFLOOR 2 0 2#DRAWFLOOR 3 0 3#DRAWFLOOR 4 0 4#DRAWFLOOR 0 1 5#DRAWFLOOR 1 1 6#DRAWFLOOR 2 1 U"
-cdef tile():
-    cdef int x,y
-    out = []
-    for x in range(tilesperscreen):
-        for y in range(tilesperscreen):
-            out.append("DRAWFLOOR {} {} {}".format(x,y,["0","1","2","3","4","5","6","U"][(y*(tilesperscreen-1)+x)%7]))
-    return "#".join(out)
-macros = {
-    "GROUNDTEST": groundtest,
-    "TILE": tile
-}
-
 
 cdef class OHOLObject:
     cdef public int id
