@@ -93,39 +93,21 @@ cpdef display_process(pipe):
         changed = False
         while pipe.poll():
             changed = True
-            command = pipe.recv()
-            if command == "STOP":
+            command = <pygamecommand>pipe.recv()
+            if command.command == STOP:
                 done = True
-            if command.startswith("DRAWPIXEL"):
-                command = command.split()
-                _ = command.pop(0)
-                x,y,r,g,b = map(int,command)
-                pygame.draw.line(screenSurface,(r,g,b),(x,y),(x,y))
-                continue
-            if command.startswith("DRAWLINE"):
-                command = command.split()
-                _ = command.pop(0)
-                x1,y1,x2,y2,r,g,b = map(int,command)
-                pygame.draw.line(screenSurface,(r,g,b),(x1,y1),(x2,y2))
-                continue
-            if command.startswith("DRAWFLOOR"):
-                command = command.split()
-                _ = command.pop(0)
-                x,y = map(int,[command[0],command[1]])
+            if command.command == DRAWFLOOR:
+                x,y = map(int,[command.args[0],command.args[1]])
                 x,y = x+1,y+1
-                id = command[2]
+                id = command.args[2]
                 x,y = x*tilesize,y*tilesize
                 screenSurface.blit(grounds[id],(x,y))
                 continue
-            if command.startswith("SETCAM"):
-                command = command.split()
-                _ = command.pop(0)
-                cx,cy = map(int,command)
+            if command.command == CAMERA:
+                cx,cy = map(int,command.args)
                 continue
-            if command.startswith("DRAWSPRITE"):
-                command = command.split()
-                _ = command.pop(0)
-                tx,ty,id = map(int,command)
+            if command.command == DRAWSPRITE:
+                tx,ty,id = map(int,command.args)
                 dx,dy = tx*tilesize+spriteoffset,ty*tilesize+spriteoffset
                 screenSurface.blit(sprites[str(id)],(dx,dy))
                 continue
@@ -155,7 +137,11 @@ cdef class Tile:
         self.ground = ground
         self.biome = biome
         self.tile = tile
-
+cdef enum commands:
+    DRAWFLOOR,
+    DRAWSPRITE,
+    CAMERA,
+    STOP
 cdef struct s_GridPos:
     int x
     int y
@@ -163,7 +149,11 @@ ctypedef s_GridPos GridPos
 
 ctypedef (int,int) pos
 cdef class pygamecommand:
-    pass
+    cdef commands command
+    cdef list options
+    def __init__(self,command,options):
+        self.command = command
+        self.options = options
 cdef GridPos postogridpos(pos cords):
     cdef GridPos out
     out.x, out.y = cords
@@ -220,11 +210,13 @@ cdef class Map():
         for dx in range(self.camera[0],self.camera[0]+self.tilesper):
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed or self.force:
-                    out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).ground))
+                    argsGround = [dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).ground]
+                    out.append(pygamecommand(DRAWGROUND,argsGround))
                     if not self.force:
                         self.changed.remove((dx,dy))
                     if self.force:
-                        self.changed = []
+                        if (dx,dy) in self.changed:
+                            self.changed.remove((dx,dy))
         self.force = False
         return out
     cdef up(self,int amt):
