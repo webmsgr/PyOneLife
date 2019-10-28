@@ -276,7 +276,7 @@ cpdef main():
                 display.send(pygamecommand(CAMERA,[0,i]))
                 time.sleep(0.1)
             map.up(1)
-            drawn = ["SETCAM 0 0"] + map.draw()
+            drawn = [pygamecommand(CAMERA,[0,0])] + map.draw()
             [display.send(x) for x in drawn]
             continue
     print("Stopping")
