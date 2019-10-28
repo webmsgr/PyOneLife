@@ -150,11 +150,15 @@ macros = {
     "TILE": tile
 }
 
-cdef struct OHOLObject
-cdef struct OHOLObject:
-    int id
-    OHOLObject[] contains
-    char data
+
+cdef class OHOLObject:
+    cdef public int id
+    cdef public list contains
+    cdef public object data
+    def __init__(self,id,contains=[],data=""):
+        self.id = id
+        self.contains = contains
+        self.data = data
 cdef struct s_Tile:
     int ground
     int x,y
@@ -204,9 +208,7 @@ cdef class Map():
     cdef setat(self,int x,int y,int ground,int biome,tile):
         cdef Tile tiletmp
         cdef OHOLObject obj
-        obj.id = 0
-        obj.contains = []
-        obj.data = <char>tile
+        obj = OHOLObject(0,[],tile)
         tiletmp.x,tiletmp.y =x,y
         tiletmp.ground = ground
         tiletmp.biome = biome
