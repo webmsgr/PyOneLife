@@ -162,7 +162,8 @@ cdef struct s_GridPos:
 ctypedef s_GridPos GridPos
 
 ctypedef (int,int) pos
-
+cdef class pygamecommand:
+    pass
 cdef GridPos postogridpos(pos cords):
     cdef GridPos out
     out.x, out.y = cords
