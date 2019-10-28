@@ -49,9 +49,11 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
+            cythonize src/pyOHOL.pyx --annotate
             ./build.sh
             mkdir game
             cp pyOHOL.pyz game/
+            cp src/pyOHOL.html game/
       - store_artifacts:
           path: game
           destination: pyOHOL
