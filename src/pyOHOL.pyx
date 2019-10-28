@@ -67,6 +67,7 @@ cpdef display_process(pipe):
     GREEN = (0, 255, 0)
     RED = (255, 0, 0)
     BLUE = (0,0,255)
+    oldfps = 0
     cdef (int,int) size
     print("Loading ground")
     grounds = loadgrounds()
@@ -109,14 +110,15 @@ cpdef display_process(pipe):
                 continue
             if command.command == DRAWSPRITE:
                 tx,ty,id = map(int,command.args)
-                dx,dy = tx*tilesize+spriteoffset,ty*tilesize+spriteoffset
-                screenSurface.blit(sprites[str(id)],(dx,dy))
+                dx,dy = (tx+1)*tilesize,(ty+1)*tilesize
+                screenSurface.blit(sprites[id],(dx,dy))
                 continue
             # do things
         if changed:
             screen.fill(WHITE)
             screen.blit(screenSurface,(cx-128,cy-128))
             pygame.display.flip()
+        fps = int(clock.get_fps())
         clock.tick(60)
     pygame.quit()
 
@@ -187,10 +189,10 @@ cdef class Map():
             if tile.x == x and tile.y == y:
                 self.map.pop(posnum)
         return True
-    cdef setat(self,int x,int y,int ground,int biome,tile):
+    cdef setat(self,int x,int y,int ground,int biome,int tileid):
         cdef Tile tiletmp
         cdef OHOLObject obj
-        obj = OHOLObject(0,[],tile)
+        obj = OHOLObject(tileid,[],"")
         tiletmp = Tile(x,y,ground,biome,obj)
         self.setatTile(x,y,tiletmp)
     cdef setatTile(self,int x,int y, Tile tile):
@@ -199,7 +201,7 @@ cdef class Map():
         self.changed.append((x,y))
     cdef Tile getat(self,int x,int y):
         if not self.ispos(x,y):
-            self.setat(x,y,4,0,"0")
+            self.setat(x,y,4,0,0)
             return self.getat(x,y)
         else:
             for tile in self.map:
@@ -213,6 +215,10 @@ cdef class Map():
                 if (dx,dy) in self.changed or self.force:
                     argsGround = [dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).ground]
                     out.append(pygamecommand(DRAWFLOOR,argsGround))
+                    if self.getat(dx,dy).tile.id != 0:
+                        argsSprite = [dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).tile.id]
+                        out.append(pygamecommand(DRAWSPRITE,argsSprite))
+
                     if not self.force:
                         self.changed.remove((dx,dy))
                     if self.force:
@@ -228,10 +234,10 @@ cdef class Map():
         self.camera = (self.camera[0],self.camera[1]+amt)
     cdef right(self,int amt):
         self.force = True
-        self.camera = (self.camera[0]+amt,self.camera[1])
+        self.camera = (self.camera[0]-amt,self.camera[1])
     cdef left(self,int amt):
         self.force = True
-        self.camera = (self.camera[0]-amt,self.camera[1])
+        self.camera = (self.camera[0]+amt,self.camera[1])
 
 
 
@@ -254,10 +260,10 @@ cpdef main():
         m = input(">")
         if m.startswith("MAP"):
             map = Map(-1,-1,tilesperscreen)
-            map.setat(0,0,0,0,"0")
-            map.setat(0,1,1,0,"0")
-            map.setat(1,0,2,0,"0")
-            map.setat(1,1,3,0,"0")
+            map.setat(0,0,0,0,996)
+            map.setat(0,1,1,0,998)
+            map.setat(1,0,2,0,997)
+            map.setat(1,1,3,0,999)
             drawn = map.draw()
             [display.send(x) for x in drawn]
             if map.draw() != []:
@@ -265,9 +271,11 @@ cpdef main():
             continue
         if m.startswith("SLIDE"):
             map = Map(0,0,tilesperscreen)
-            map.setat(0,-1,1,0,"0")
+            map.setat(0,-1,1,0,978)
+            map.setat(1,-1,1,0,983)
             for yslide in range(10):
-                map.setat(0,yslide,0,0,"0")
+                map.setat(0,yslide,0,0,372)
+                map.setat(1,yslide,0,0,918)
             map.force = True
             drawn = map.draw()
             [display.send(x) for x in drawn]
@@ -275,8 +283,15 @@ cpdef main():
             for i in range(0,129):
                 map.force = True
                 display.send(pygamecommand(CAMERA,[0,i]))
-                time.sleep(0.1)
+                time.sleep(0.01)
             map.up(1)
+            drawn = [pygamecommand(CAMERA,[0,0])] + map.draw()
+            [display.send(x) for x in drawn]
+            for i in range(0,129):
+                map.force = True
+                display.send(pygamecommand(CAMERA,[i,0]))
+                time.sleep(0.01)
+            map.right(1)
             drawn = [pygamecommand(CAMERA,[0,0])] + map.draw()
             [display.send(x) for x in drawn]
             continue
