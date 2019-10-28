@@ -50,10 +50,12 @@ jobs:
           command: |
             . venv/bin/activate
             cythonize src/pyOHOL.pyx --annotate
+            rm src/pyOHOL.c
             ./build.sh
             mkdir game
             cp pyOHOL.pyz game/
             cp src/pyOHOL.html game/
+            cp src/pyOHOL.c game/
       - store_artifacts:
           path: game
           destination: pyOHOL
