@@ -17,12 +17,12 @@ cdef extern from "miniz.h":
 cdef extern from "miniz.c":
     int mz_uncompress(unsigned char *pDest, unsigned long *pDest_len, const unsigned char *pSource, unsigned long source_len);
 
-cpdef get_dir():
+cdef get_dir():
     if "OneLifeData" in os.listdir("."):
         return os.path.abspath(".")
     else:
         return dir_name
-cpdef parse_chunk(bytes header,bytes compressed):
+cdef parse_chunk(bytes header,bytes compressed):
     cdef unsigned char *mpdata
     cdef unsigned long *csize
     cdef unsigned long cbsize
@@ -138,18 +138,18 @@ cpdef display_process(pipe):
     pygame.quit()
 
 cdef class OHOLObject:
-    cdef public int id
-    cdef public list contains
-    cdef public object data
+    cdef int id
+    cdef list contains
+    cdef object data
     def __init__(self,id,contains=[],data=""):
         self.id = id
         self.contains = contains
         self.data = data
 cdef class Tile:
-    cdef public int ground
-    cdef public int x,y
-    cdef public int biome
-    cdef public OHOLObject tile
+    cdef int ground
+    cdef int x,y
+    cdef int biome
+    cdef OHOLObject tile
     def __init__(self,x,y,ground,biome,tile):
         self.x,self.y = x,y
         self.ground = ground
@@ -171,11 +171,11 @@ cdef GridPos fromcords(int x,int y):
     cdef GridPos out
     out.x,out.y = x,y
 cdef class Map():
-    cdef public bint force
-    cdef public list map
-    cdef public pos camera
-    cdef public int tilesper
-    cdef public list changed
+    cdef bint force
+    cdef list map
+    cdef pos camera
+    cdef int tilesper
+    cdef list changed
     def __init__(self,cx,cy,tilesper):
         self.map = []
         self.camera = (cx-1,cy-1)
@@ -195,17 +195,17 @@ cdef class Map():
             if tile.x == x and tile.y == y:
                 self.map.pop(posnum)
         return True
-    cpdef setat(self,int x,int y,int ground,int biome,tile):
+    cdef setat(self,int x,int y,int ground,int biome,tile):
         cdef Tile tiletmp
         cdef OHOLObject obj
         obj = OHOLObject(0,[],tile)
         tiletmp = Tile(x,y,ground,biome,obj)
         self.setatTile(x,y,tiletmp)
-    cpdef setatTile(self,int x,int y, Tile tile):
+    cdef setatTile(self,int x,int y, Tile tile):
         self.removepos(x,y)
         self.map.append(tile)
         self.changed.append((x,y))
-    cpdef Tile getat(self,int x,int y):
+    cdef Tile getat(self,int x,int y):
         if not self.ispos(x,y):
             self.setat(x,y,4,0,"0")
             return self.getat(x,y)
@@ -213,7 +213,7 @@ cdef class Map():
             for tile in self.map:
                 if tile.x == x and tile.y == y:
                     return tile
-    cpdef draw(self):
+    cdef draw(self):
         cdef int dx,dy
         out = []
         for dx in range(self.camera[0],self.camera[0]+self.tilesper):
@@ -226,23 +226,23 @@ cdef class Map():
                         self.changed = []
         self.force = False
         return out
-    cpdef up(self,int amt):
+    cdef up(self,int amt):
         self.camera = (self.camera[0],self.camera[1]-amt)
         self.force = True
-    cpdef down(self,int amt):
+    cdef down(self,int amt):
         self.force = True
         self.camera = (self.camera[0],self.camera[1]+amt)
-    cpdef right(self,int amt):
+    cdef right(self,int amt):
         self.force = True
         self.camera = (self.camera[0]+amt,self.camera[1])
-    cpdef left(self,int amt):
+    cdef left(self,int amt):
         self.force = True
         self.camera = (self.camera[0]-amt,self.camera[1])
 
 
 
 
-def server_process(saddr,sport,pipe):
+cpdef server_process(saddr,sport,pipe):
     pass
 
 
