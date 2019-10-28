@@ -138,13 +138,6 @@ cpdef display_process(pipe):
     pygame.quit()
 cdef groundtest():
     return "DRAWFLOOR 0 0 0#DRAWFLOOR 1 0 1#DRAWFLOOR 2 0 2#DRAWFLOOR 3 0 3#DRAWFLOOR 4 0 4#DRAWFLOOR 0 1 5#DRAWFLOOR 1 1 6#DRAWFLOOR 2 1 U"
-cdef fill(floor="0"):
-    out = []
-    cdef int x,y
-    for x in range(tilesperscreen):
-        for y in range(tilesperscreen):
-            out.append("DRAWFLOOR {} {} {}".format(x,y,floor))
-    return "#".join(out)
 cdef tile():
     cdef int x,y
     out = []
@@ -156,6 +149,26 @@ macros = {
     "GROUNDTEST": groundtest,
     "TILE": tile
 }
+
+
+cdef class OHOLObject():
+    cdef public int id
+    cdef public OHOLObject[] contains
+    cdef public object data
+    def __init__(self,id,contains=[],data=""):
+        self.id = id
+        self.contains = contains
+cdef class Tile():
+    cdef public int ground
+    cdef public int x,y
+    cdef public int biome
+    cdef public OHOLObject tile
+    def __init__(self,x,y,ground,biome,tile):
+        self.x,self.y = x,y
+        self.ground = ground
+        self.biome = biome
+        self.tile = tile
+
 cdef class Map():
     cdef public bint force
     cdef public object map
@@ -169,25 +182,29 @@ cdef class Map():
         self.changed = []
         self.force = True
     cpdef setat(self,x,y,ground,biome,tile):
+        cdef Tile tiletmp
+        cdef OHOLObject obj = OHOLObject(0,[],tile)
+        tiletmp = Tile(x,y,ground,biome,obj)
+        
         if x in self.map:
-            self.map[x][y] = (ground,biome,tile)
+            self.map[x][y] = tiletmp
         else:
             self.map[x] = {}
-            self.map[x][y] = (ground,biome,tile)
+            self.map[x][y] = tiletmp
         self.changed.append((x,y))
     cpdef getat(self,x,y):
         if x in self.map:
             if y in self.map[x]:
                 return self.map[x][y]
         self.setat(x,y,"U","0","0")
-        return ("U","0","0")
+        return self.getat(x,y)
     cpdef draw(self):
         cdef int dx,dy
         out = []
         for dx in range(self.camera[0],self.camera[0]+self.tilesper):
             for dy in range(self.camera[1],self.camera[1]+self.tilesper):
                 if (dx,dy) in self.changed or self.force:
-                    out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy)[0]))
+                    out.append("DRAWFLOOR {} {} {}".format(dx-self.camera[0]-1,dy-self.camera[1]-1,self.getat(dx,dy).ground))
                     if not self.force:
                         self.changed.remove((dx,dy))
                     if self.force:
