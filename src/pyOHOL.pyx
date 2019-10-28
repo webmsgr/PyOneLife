@@ -261,6 +261,7 @@ cpdef main():
             [display.send(x) for x in drawn]
             if map.draw() != []:
                 raise RuntimeError
+            continue
         if m.startswith("SLIDE"):
             map = Map(0,0,tilesperscreen)
             map.setat(0,-1,1,0,"0")
@@ -277,10 +278,11 @@ cpdef main():
             map.up(1)
             drawn = ["SETCAM 0 0"] + map.draw()
             [display.send(x) for x in drawn]
+            continue
         if m != "q":
             display.send(m)
     print("Stopping")
-    display.send("STOP")
+    display.send(pygamecommand(STOP,[]))
     display_proc.join()
 
 if __name__ == "__main__":
