@@ -262,7 +262,7 @@ def server_process(saddr,sport,pipe):
 
 
 cpdef main():
-    cdef int i
+    cdef int i,yslide
     mp.freeze_support()
     display,d = mp.Pipe()
     display_proc = mp.Process(target=display_process,args=(d,))
@@ -272,14 +272,6 @@ cpdef main():
     m = ""
     while display_proc.is_alive() and m != "q":
         m = input(">")
-        if m.startswith("MACRO"):
-            m = m.split()
-            macroname = m[1]
-            if macroname in macros:
-                macroz = macros[macroname]().split("#")
-                for macro in macroz:
-                    display.send(macro)
-            continue
         if m.startswith("MAP"):
             map = Map(-1,-1,tilesperscreen)
             map.setat(0,0,0,0,"0")
@@ -292,14 +284,15 @@ cpdef main():
                 raise RuntimeError
         if m.startswith("SLIDE"):
             map = Map(0,0,tilesperscreen)
-            map.setat(0,-1,"1","0","0")
-            [map.setat(0,y,"0","0","0") for y in range(10)]
+            map.setat(0,-1,1,0,"0")
+            for yslide in range(10):
+                map.setat(0,yslide,0,0,"0")
             map.force = True
             drawn = map.draw()
             [display.send(x) for x in drawn]
             time.sleep(1)
             for i in range(0,129):
-                display.force = True
+                map.force = True
                 display.send("SETCAM 0 {}".format(i))
                 time.sleep(0.1)
             map.up(1)
