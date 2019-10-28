@@ -178,17 +178,30 @@ cdef GridPos fromcords(int x,int y):
     out.x,out.y = x,y
 cdef class Map():
     cdef public bint force
-    cdef public object map
+    cdef public Tile[] map
     cdef public pos camera
     cdef public int tilesper
     cdef public list changed
     def __init__(self,cx,cy,tilesper):
-        self.map = {}
+        self.map = []
         self.camera = (cx-1,cy-1)
         self.tilesper = tilesper+2
         self.changed = []
         self.force = True
-    cpdef setat(self,int x,int y,int ground,int biome,tile):
+    cdef bint ispos(self,int x,int y):
+        for tile in self.map:
+            if tile.x == x:
+                if tile.y == y:
+                    return True
+        return False
+    cdef bint removepos(self,int x,int y):
+        if not self.ispos(x,y):
+            return False
+        for posnum,tile in enumerate(self.map):
+            if tile.x == x and tile.y == y:
+                self.map.pop(posnum)
+        return True
+    cdef setat(self,int x,int y,int ground,int biome,tile):
         cdef Tile tiletmp
         cdef OHOLObject obj
         obj.id = 0
@@ -198,18 +211,17 @@ cdef class Map():
         tiletmp.ground = ground
         tiletmp.biome = biome
         tiletmp.tile = obj
-        if x in self.map:
-            self.map[x][y] = &(tiletmp)
-        else:
-            self.map[x] = {}
-            self.map[x][y] = &(tiletmp)
+        self.removepos(x,y)
+        self.map.append(tiletmp)
         self.changed.append((x,y))
-    cpdef Tile *getat(self,int x,int y):
-        if x in self.map:
-            if y in self.map[x]:
-                return self.map[x][y]
-        self.setat(x,y,4,0,"0")
-        return self.getat(x,y)
+    cdef Tile getat(self,int x,int y):
+        if not self.ispos(x,y):
+            self.setat(x,y,4,0,"0")
+            return self.getat(x,y)
+        else:
+            for tile in self.map:
+                if tile.x == x and tile.y == y:
+                    return tile
     cpdef draw(self):
         cdef int dx,dy
         out = []
