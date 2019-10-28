@@ -155,7 +155,7 @@ macros = {
 cdef class Map():
     cdef public bint force
     cdef public object map
-    cdef public object camera
+    cdef public (int,int) camera
     cdef public object tilesper
     cdef public object changed
     def __init__(self,cx,cy,tilesper):
@@ -190,9 +190,18 @@ cdef class Map():
                         self.changed = []
         self.force = False
         return out
-    cpdef up(self,amt):
+    cpdef up(self,int amt):
         self.camera = (self.camera[0],self.camera[1]-amt)
         self.force = True
+    cpdef down(self,int amt):
+        self.force = True
+        self.camera = (self.camera[0],self.camera[1]+amt)
+    cpdef right(self,int amt):
+        self.force = True
+        self.camera = (self.camera[0]+amt,self.camera[1])
+    cpdef left(self,int amt):
+        self.force = True
+        self.camera = (self.camera[0]-amt,self.camera[1])
 
 
 
