@@ -150,12 +150,11 @@ macros = {
     "TILE": tile
 }
 
-
-cdef struct s_OHOLObject:
+cdef struct OHOLObject
+cdef struct OHOLObject:
     int id
     OHOLObject[] contains
-    char *data
-ctypedef s_OHOLObject OHOLObject
+    char data
 cdef struct s_Tile:
     int ground
     int x,y
@@ -194,18 +193,18 @@ cdef class Map():
         cdef OHOLObject obj
         obj.id = 0
         obj.contains = []
-        obj.data = tile.encode()
+        obj.data = <char>tile
         tiletmp.x,tiletmp.y =x,y
         tiletmp.ground = ground
         tiletmp.biome = biome
         tiletmp.tile = obj
         if x in self.map:
-            self.map[x][y] = tiletmp
+            self.map[x][y] = &(tiletmp)
         else:
             self.map[x] = {}
-            self.map[x][y] = tiletmp
+            self.map[x][y] = &(tiletmp)
         self.changed.append((x,y))
-    cpdef Tile getat(self,int x,int y):
+    cpdef Tile *getat(self,int x,int y):
         if x in self.map:
             if y in self.map[x]:
                 return self.map[x][y]
