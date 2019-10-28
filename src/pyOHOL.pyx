@@ -283,5 +283,3 @@ cpdef main():
     display.send(pygamecommand(STOP,[]))
     display_proc.join()
 
-if __name__ == "__main__":
-    main()
