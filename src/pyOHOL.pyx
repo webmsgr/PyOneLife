@@ -153,7 +153,7 @@ macros = {
 
 cdef class OHOLObject():
     cdef public int id
-    cdef public OHOLObject[] contains
+    cdef public list contains
     cdef public object data
     def __init__(self,id,contains=[],data=""):
         self.id = id
