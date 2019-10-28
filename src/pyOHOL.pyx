@@ -154,7 +154,7 @@ macros = {
 cdef struct s_OHOLObject:
     int id
     list contains
-    object data
+    bytes data
 ctypedef s_OHOLObject OHOLObject
 cdef struct s_Tile:
     int ground
@@ -162,35 +162,54 @@ cdef struct s_Tile:
     int biome
     OHOLObject tile
 ctypedef s_Tile Tile
+
+cdef struct s_GridPos:
+    int x
+    int y
+ctypedef s_GridPos GridPos
+
 ctypedef (int,int) pos
+
+cdef GridPos postogridpos(pos cords):
+    cdef GridPos out
+    out.x, out.y = cords
+    return out
+cdef GridPos fromcords(int x,int y):
+    cdef GridPos out
+    out.x,out.y = x,y
 cdef class Map():
     cdef public bint force
     cdef public object map
     cdef public pos camera
     cdef public int tilesper
-    cdef public pos[] changed
+    cdef public list changed
     def __init__(self,cx,cy,tilesper):
         self.map = {}
         self.camera = (cx-1,cy-1)
         self.tilesper = tilesper+2
         self.changed = []
         self.force = True
-    cpdef setat(self,x,y,ground,biome,tile):
+    cpdef setat(self,int x,int y,int ground,int biome,tile):
         cdef Tile tiletmp
-        cdef OHOLObject obj = OHOLObject(0,[],tile)
-        tiletmp = Tile(x,y,ground,biome,obj)
-        
+        cdef OHOLObject obj
+        obj.id = 0
+        obj.contains = []
+        obj.data = tile.encode()
+        tiletmp.x,tiletmp.y =x,y
+        tiletmp.ground = ground
+        tiletmp.biome = biome
+        tiletmp.tile = obj
         if x in self.map:
             self.map[x][y] = tiletmp
         else:
             self.map[x] = {}
             self.map[x][y] = tiletmp
         self.changed.append((x,y))
-    cpdef getat(self,x,y):
+    cpdef Tile getat(self,int x,int y):
         if x in self.map:
             if y in self.map[x]:
                 return self.map[x][y]
-        self.setat(x,y,"U","0","0")
+        self.setat(x,y,4,0,"0")
         return self.getat(x,y)
     cpdef draw(self):
         cdef int dx,dy
@@ -247,10 +266,10 @@ cpdef main():
             continue
         if m.startswith("MAP"):
             map = Map(-1,-1,tilesperscreen)
-            map.setat(0,0,"0","0","0")
-            map.setat(0,1,"1","0","0")
-            map.setat(1,0,"2","0","0")
-            map.setat(1,1,"3","0","0")
+            map.setat(0,0,0,0,"0")
+            map.setat(0,1,1,0,"0")
+            map.setat(1,0,2,0,"0")
+            map.setat(1,1,3,0,"0")
             drawn = map.draw()
             [display.send(x) for x in drawn]
             if map.draw() != []:
