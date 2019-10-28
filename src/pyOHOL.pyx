@@ -11,6 +11,7 @@ path = os.path.abspath(__file__)
 dir_name = os.path.dirname(path)
 from PIL import Image
 DEF tilesize = 128
+DEF spriteoffset = tilesize//2
 cdef extern from "miniz.h":
     pass
 cdef extern from "miniz.c":
@@ -125,8 +126,7 @@ cpdef display_process(pipe):
                 command = command.split()
                 _ = command.pop(0)
                 tx,ty,id = map(int,command)
-                offset = tilesize//2
-                dx,dy = tx*tilesize+offset,ty*tilesize+offset
+                dx,dy = tx*tilesize+spriteoffset,ty*tilesize+spriteoffset
                 screenSurface.blit(sprites[str(id)],(dx,dy))
                 continue
             # do things
