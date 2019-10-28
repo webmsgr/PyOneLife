@@ -55,9 +55,17 @@ cdef loadsprites():
     for file in glob.glob(os.path.join(di,"OneLifeData/sprites/*.tga")):
         sprites[os.path.basename(file.replace(".tga",""))] = pygame.image.load(file)
     return sprites
+ctypedef (int,int,int) pygameColor
 
 cpdef display_process(pipe):
     cdef int cx,cy
+    cdef pygameColor BLACK,WHITE,GREEN,RED,BLUE
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    GREEN = (0, 255, 0)
+    RED = (255, 0, 0)
+    BLUE = (0,0,255)
+    cdef (int,int) size
     print("Loading ground")
     grounds = loadgrounds()
     print("Loading sprites")
@@ -65,10 +73,6 @@ cpdef display_process(pipe):
     pipe.send("READY")
     # Define some colors
     cx,cy = 0,0
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
     pygame.init()
     # Set the width and height of the screen [width, height]
     size = (tilesize*tilesperscreen, tilesize*tilesperscreen)
