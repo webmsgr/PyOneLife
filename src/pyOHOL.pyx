@@ -159,12 +159,16 @@ cdef class OHOLObject:
         self.id = id
         self.contains = contains
         self.data = data
-cdef struct s_Tile:
-    int ground
-    int x,y
-    int biome
-    OHOLObject tile
-ctypedef s_Tile Tile
+cdef class Tile:
+    cdef public int ground
+    cdef public int x,y
+    cdef public int biome
+    cdef public OHOLObject tile
+    def __init__(x,y,ground,biome,tile):
+        self.x,self.y = x,y
+        self.ground = ground
+        self.biome = biome
+        self.tile = tile
 
 cdef struct s_GridPos:
     int x
@@ -182,7 +186,7 @@ cdef GridPos fromcords(int x,int y):
     out.x,out.y = x,y
 cdef class Map():
     cdef public bint force
-    cdef public Tile[] map
+    cdef public list map
     cdef public pos camera
     cdef public int tilesper
     cdef public list changed
@@ -205,18 +209,17 @@ cdef class Map():
             if tile.x == x and tile.y == y:
                 self.map.pop(posnum)
         return True
-    cdef setat(self,int x,int y,int ground,int biome,tile):
+    cpdef setat(self,int x,int y,int ground,int biome,tile):
         cdef Tile tiletmp
         cdef OHOLObject obj
         obj = OHOLObject(0,[],tile)
-        tiletmp.x,tiletmp.y =x,y
-        tiletmp.ground = ground
-        tiletmp.biome = biome
-        tiletmp.tile = obj
+        tiletmp = Tile(x,y,ground,biome,obj)
+        self.setatTile(x,y,tiletmp)
+    cpdef setatTile(self,int x,int y, Tile tile):
         self.removepos(x,y)
-        self.map.append(tiletmp)
+        self.map.append(tile)
         self.changed.append((x,y))
-    cdef Tile getat(self,int x,int y):
+    cpdef Tile getat(self,int x,int y):
         if not self.ispos(x,y):
             self.setat(x,y,4,0,"0")
             return self.getat(x,y)
