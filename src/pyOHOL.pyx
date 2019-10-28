@@ -156,7 +156,7 @@ cdef class Map():
     cdef public bint force
     cdef public object map
     cdef public (int,int) camera
-    cdef public object tilesper
+    cdef public int tilesper
     cdef public object changed
     def __init__(self,cx,cy,tilesper):
         self.map = {}
