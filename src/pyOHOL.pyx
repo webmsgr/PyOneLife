@@ -153,8 +153,8 @@ macros = {
 
 cdef struct s_OHOLObject:
     int id
-    list contains
-    bytes data
+    OHOLObject[] contains
+    char *data
 ctypedef s_OHOLObject OHOLObject
 cdef struct s_Tile:
     int ground
