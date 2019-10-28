@@ -151,7 +151,7 @@ ctypedef (int,int) pos
 cdef class pygamecommand:
     cdef commands command
     cdef list options
-    def __init__(self,command,options):
+    def __init__(self,command,options=[]):
         self.command = command
         self.options = options
 cdef GridPos postogridpos(pos cords):
