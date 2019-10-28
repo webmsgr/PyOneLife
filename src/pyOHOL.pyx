@@ -54,7 +54,7 @@ cdef loadsprites():
     sprites = {}
     di = get_dir()
     for file in glob.glob(os.path.join(di,"OneLifeData/sprites/*.tga")):
-        sprites[os.path.basename(file.replace(".tga",""))] = pygame.image.load(file)
+        sprites[int(os.path.basename(file.replace(".tga","")))] = pygame.image.load(file)
     return sprites
 ctypedef (int,int,int) pygameColor
 
@@ -101,7 +101,7 @@ cpdef display_process(pipe):
                 x,y = x+1,y+1
                 id = command.args[2]
                 x,y = x*tilesize,y*tilesize
-                screenSurface.blit(grounds[id],(x,y))
+                screenSurface.blit(grounds[str(id)],(x,y))
                 continue
             if command.command == CAMERA:
                 cx,cy = map(int,command.args)
@@ -120,18 +120,18 @@ cpdef display_process(pipe):
     pygame.quit()
 
 cdef class OHOLObject:
-    cdef int id
-    cdef list contains
-    cdef object data
+    cdef public int id
+    cdef public list contains
+    cdef public object data
     def __init__(self,id,contains=[],data=""):
         self.id = id
         self.contains = contains
         self.data = data
 cdef class Tile:
-    cdef int ground
-    cdef int x,y
-    cdef int biome
-    cdef OHOLObject tile
+    cdef public int ground
+    cdef public int x,y
+    cdef public int biome
+    cdef public OHOLObject tile
     def __init__(self,x,y,ground,biome,tile):
         self.x,self.y = x,y
         self.ground = ground
@@ -149,11 +149,11 @@ ctypedef s_GridPos GridPos
 
 ctypedef (int,int) pos
 cdef class pygamecommand:
-    cdef commands command
-    cdef list options
-    def __init__(self,command,options=[]):
+    cdef public commands command
+    cdef public list args
+    def __init__(self,command,args=[]):
         self.command = command
-        self.options = options
+        self.args = args
 cdef GridPos postogridpos(pos cords):
     cdef GridPos out
     out.x, out.y = cords
@@ -162,11 +162,11 @@ cdef GridPos fromcords(int x,int y):
     cdef GridPos out
     out.x,out.y = x,y
 cdef class Map():
-    cdef bint force
-    cdef list map
-    cdef pos camera
-    cdef int tilesper
-    cdef list changed
+    cdef public bint force
+    cdef public list map
+    cdef public pos camera
+    cdef public int tilesper
+    cdef public list changed
     def __init__(self,cx,cy,tilesper):
         self.map = []
         self.camera = (cx-1,cy-1)
