@@ -164,7 +164,7 @@ cdef class Tile:
     cdef public int x,y
     cdef public int biome
     cdef public OHOLObject tile
-    def __init__(x,y,ground,biome,tile):
+    def __init__(self,x,y,ground,biome,tile):
         self.x,self.y = x,y
         self.ground = ground
         self.biome = biome
