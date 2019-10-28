@@ -60,6 +60,7 @@ ctypedef (int,int,int) pygameColor
 
 cpdef display_process(pipe):
     cdef int cx,cy
+    cdef pygamecommand command
     cdef pygameColor BLACK,WHITE,GREEN,RED,BLUE
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -93,7 +94,7 @@ cpdef display_process(pipe):
         changed = False
         while pipe.poll():
             changed = True
-            command = <pygamecommand>pipe.recv()
+            command = pipe.recv()
             if command.command == STOP:
                 done = True
             if command.command == DRAWFLOOR:
